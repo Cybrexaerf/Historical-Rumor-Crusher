@@ -6,11 +6,15 @@ Windows 离线运行的纯静态 Web 应用：收录、拆解、澄清网络流�
 
 ```bash
 npm install
-npm run build      # 内容编译 → 打包 → 离线检查（三合一）
+npm run build      # 内容编译 → 打包（单文件内联）→ 离线检查（三合一）
 npm run preview    # 本地预览 http://localhost:4173
 ```
 
-构建产物在 `dist/`，双击 `dist/index.html` 即可离线使用（file:// 直开，无需服务器）。
+构建产物在 `dist/`：**双击 `dist/index.html` 即可离线使用**（已将全部 JS/CSS 内联进单 HTML，
+`file://` 直开可用；字体文件在 `dist/assets/`，需与 index.html 保持同目录结构，分发时整个 `dist/` 一起拷贝）。
+
+> 技术说明：浏览器对 `file://` 协议禁止加载外部 module 脚本（CORS），因此本应用采用
+> `vite-plugin-singlefile` 单文件内联构建；懒加载路由与检索 Worker 在 file:// 下自动降级为主线程执行。
 
 ## 内容编写（content/*.md）
 
