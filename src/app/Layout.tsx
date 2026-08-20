@@ -6,6 +6,7 @@ const NAV = [
   { to: '/timeline', label: '时代长卷' },
   { to: '/search', label: '检索' },
   { to: '/bookmarks', label: '我的书架' },
+  { to: '/stats', label: '馆志' },
   { to: '/imports', label: '导入管理' }
 ]
 

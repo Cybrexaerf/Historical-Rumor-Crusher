@@ -10,6 +10,7 @@ const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
 const EntryPage = lazy(() => import('./features/entry/EntryPage.tsx'))
 const ImportsPage = lazy(() => import('./features/imports/ImportsPage.tsx'))
 const BookmarksPage = lazy(() => import('./features/bookmarks/BookmarksPage.tsx'))
+const StatsPage = lazy(() => import('./features/stats/StatsPage.tsx'))
 
 const Loading = () => (
   <p className="p-12 text-center text-inksoft" role="status">
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/entry/:id" element={<EntryPage />} />
           <Route path="/imports" element={<ImportsPage />} />
           <Route path="/bookmarks" element={<BookmarksPage />} />
+          <Route path="/stats" element={<StatsPage />} />
         </Route>
       </Routes>
     </Suspense>

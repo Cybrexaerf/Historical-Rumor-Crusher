@@ -16,6 +16,7 @@ export default function EntryPage() {
   const loadEntry = useArchive((s) => s.loadEntry)
   const markRead = useArchive((s) => s.markRead)
   const pushRecent = useArchive((s) => s.pushRecent)
+  const incrementViews = useArchive((s) => s.incrementViews)
   const fontSize = useArchive((s) => s.user.fontSize)
   const setFontSize = useArchive((s) => s.setFontSize)
   const bookmarks = useArchive((s) => s.user.bookmarks)
@@ -32,7 +33,8 @@ export default function EntryPage() {
     })
     markRead(id)
     pushRecent(id)
-  }, [id, entry, loadEntry, markRead, pushRecent, setBodyHtml])
+    incrementViews(id)
+  }, [id, entry, loadEntry, markRead, pushRecent, incrementViews])
 
   const { sections, footnotes } = useMemo(() => sectionize(bodyHtml ?? ''), [bodyHtml])
 

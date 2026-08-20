@@ -5,9 +5,20 @@ export interface UserData {
   read: string[]
   recent: string[]
   fontSize: 'small' | 'normal' | 'large'
+  /** 卷宗浏览次数（馆志统计用） */
+  views: Record<string, number>
+  /** 首次开馆日期 ISO（建馆纪念） */
+  openedAt: string | null
 }
 
-const DEFAULT: UserData = { bookmarks: [], read: [], recent: [], fontSize: 'normal' }
+const DEFAULT: UserData = {
+  bookmarks: [],
+  read: [],
+  recent: [],
+  fontSize: 'normal',
+  views: {},
+  openedAt: null
+}
 
 export function loadUserData(): UserData {
   try {
@@ -18,7 +29,9 @@ export function loadUserData(): UserData {
       bookmarks: parsed.bookmarks ?? [],
       read: parsed.read ?? [],
       recent: parsed.recent ?? [],
-      fontSize: parsed.fontSize ?? 'normal'
+      fontSize: parsed.fontSize ?? 'normal',
+      views: parsed.views ?? {},
+      openedAt: parsed.openedAt ?? null
     }
   } catch {
     return { ...DEFAULT }

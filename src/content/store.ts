@@ -27,6 +27,7 @@ interface ArchiveState {
   toggleBookmark: (id: string) => void
   markRead: (id: string) => void
   pushRecent: (id: string) => void
+  incrementViews: (id: string) => void
   setFontSize: (size: UserData['fontSize']) => void
 }
 
@@ -44,12 +45,16 @@ export const useArchive = create<ArchiveState>((set, get) => ({
   ready: false,
   merged: EMPTY_INDEX,
   imports: [],
-  user: { bookmarks: [], read: [], recent: [], fontSize: 'normal' },
+  user: { bookmarks: [], read: [], recent: [], fontSize: 'normal', views: {}, openedAt: null },
   bodies: {},
 
   async init() {
     const imports = await getAllImports()
-    const user = loadUserData()
+    let user = loadUserData()
+    if (!user.openedAt) {
+      user = { ...user, openedAt: new Date().toISOString() }
+      saveUserData(user)
+    }
     applyFontSize(user.fontSize)
     set({ imports, user, merged: reindex(imports), ready: true })
   },
@@ -114,6 +119,14 @@ export const useArchive = create<ArchiveState>((set, get) => ({
     const { user } = get()
     const recent = [id, ...user.recent.filter((r) => r !== id)].slice(0, 20)
     const next = { ...user, recent }
+    saveUserData(next)
+    set({ user: next })
+  },
+
+  incrementViews(id) {
+    const { user } = get()
+    const views = { ...user.views, [id]: (user.views[id] ?? 0) + 1 }
+    const next = { ...user, views }
     saveUserData(next)
     set({ user: next })
   },
