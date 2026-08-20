@@ -6,10 +6,7 @@ export function parseMdForImport(raw: string, filename: string): ParseResult {
 }
 
 /** 导入层条目 → 可下载的 md 文本（往返格式） */
-export function recordToMarkdown(record: {
-  meta: Record<string, unknown> & { references: { id: string; type: string; text: string }[] }
-  rawMd: string
-}): string {
+export function recordToMarkdown(record: { rawMd: string }): string {
   return record.rawMd
 }
 

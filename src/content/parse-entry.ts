@@ -11,7 +11,8 @@ const footnote: FootnotePlugin =
 const md = new MarkdownIt({ html: false, linkify: false, typographer: false }).use(footnote)
 import { load as yamlLoad } from 'js-yaml'
 import DOMPurify from 'dompurify'
-import { EntryMetaSchema, REQUIRED_SECTIONS, SECTION_LABELS, SECTION_TITLES } from './schema.ts'
+import { EntryMetaSchema } from './schema-validate.ts'
+import { REQUIRED_SECTIONS, SECTION_LABELS, SECTION_TITLES } from './schema.ts'
 import type { EntryMeta } from './schema.ts'
 
 export interface ParseSuccess {

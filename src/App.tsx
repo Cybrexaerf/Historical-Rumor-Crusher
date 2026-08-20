@@ -1,27 +1,37 @@
+import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Layout from './app/Layout'
 import { useAppInit } from './app/hooks'
 import Landing from './features/landing/Landing.tsx'
-import Browse from './features/browse/Browse.tsx'
-import Timeline from './features/timeline/Timeline.tsx'
-import SearchPage from './features/search/SearchPage.tsx'
-import EntryPage from './features/entry/EntryPage.tsx'
-import ImportsPage from './features/imports/ImportsPage.tsx'
-import BookmarksPage from './features/bookmarks/BookmarksPage.tsx'
+
+const Browse = lazy(() => import('./features/browse/Browse.tsx'))
+const Timeline = lazy(() => import('./features/timeline/Timeline.tsx'))
+const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
+const EntryPage = lazy(() => import('./features/entry/EntryPage.tsx'))
+const ImportsPage = lazy(() => import('./features/imports/ImportsPage.tsx'))
+const BookmarksPage = lazy(() => import('./features/bookmarks/BookmarksPage.tsx'))
+
+const Loading = () => (
+  <p className="p-12 text-center text-inksoft" role="status">
+    正在调阅卷宗……
+  </p>
+)
 
 export default function App() {
   useAppInit()
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Landing />} />
-        <Route path="/browse" element={<Browse />} />
-        <Route path="/timeline" element={<Timeline />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/entry/:id" element={<EntryPage />} />
-        <Route path="/imports" element={<ImportsPage />} />
-        <Route path="/bookmarks" element={<BookmarksPage />} />
-      </Route>
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/browse" element={<Browse />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/entry/:id" element={<EntryPage />} />
+          <Route path="/imports" element={<ImportsPage />} />
+          <Route path="/bookmarks" element={<BookmarksPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
   )
 }

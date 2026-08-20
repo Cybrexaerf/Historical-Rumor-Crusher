@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { EntryMetaSchema, ERA_KEYS, VERDICT_KEYS } from './schema'
+import { ERA_KEYS, VERDICT_KEYS } from './schema'
+import { EntryMetaSchema } from './schema-validate'
 
 const validMeta = {
   id: 'qianlong-hanrein',

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+
 
 /** 受控词表 —— 全库唯一定义处（红线 6） */
 
@@ -52,33 +52,26 @@ export const evidenceLabel = (key: string): string =>
 export const REFERENCE_TYPES = ['ancient', 'modern', 'journal', 'web'] as const
 export type ReferenceType = (typeof REFERENCE_TYPES)[number]
 
-/** Front-matter Schema */
+export interface Reference {
+  id: string
+  type: ReferenceType
+  text: string
+}
 
-export const ReferenceSchema = z.object({
-  id: z.string().regex(/^[a-z0-9-]+$/, '引用 id 须为小写字母数字连字符'),
-  type: z.enum(REFERENCE_TYPES),
-  text: z.string().min(1, '引用内容不能为空')
-})
-
-export const EntryMetaSchema = z.object({
-  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'id 须为 kebab-case'),
-  title: z.string().min(1).max(60),
-  rumor: z.string().min(1).max(300),
-  verdict: z.enum(VERDICT_KEYS),
-  era: z.enum(ERA_KEYS),
-  category: z.enum(CATEGORY_KEYS),
-  tags: z.array(z.coerce.string().min(1).max(12)).min(1).max(8),
-  origin: z.enum(ORIGINS),
-  evidence: z.enum(EVIDENCE_LEVELS),
-  updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'updated 须为 YYYY-MM-DD'),
-  revision: z.number().int().min(1).default(1),
-  references: z.array(ReferenceSchema).min(1, '至少一条参考文献')
-}).refine(
-  (m) => new Set(m.references.map((r) => r.id)).size === m.references.length,
-  { message: '参考文献 id 重复', path: ['references'] }
-)
-export type EntryMeta = z.infer<typeof EntryMetaSchema>
-export type Reference = z.infer<typeof ReferenceSchema>
+export interface EntryMeta {
+  id: string
+  title: string
+  rumor: string
+  verdict: VerdictKey
+  era: EraKey
+  category: CategoryKey
+  tags: string[]
+  origin: OriginKey
+  evidence: EvidenceLevel
+  updated: string
+  revision: number
+  references: Reference[]
+}
 
 /** 正文区块键 */
 export const SECTION_KEYS = ['rumor-origin', 'spread', 'evidence', 'verdict'] as const
