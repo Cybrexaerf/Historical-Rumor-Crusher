@@ -99,6 +99,9 @@ const docs: FulltextDoc[] = metas.map((meta) => {
   }
 })
 
+stats.wordCount = docs.reduce((acc, d) => acc + d.fulltext.length, 0)
+stats.refCount = metas.reduce((acc, m) => acc + m.references.length, 0)
+
 for (let i = 0; i < metas.length; i++) {
   const meta = metas[i]
   await writeFile(

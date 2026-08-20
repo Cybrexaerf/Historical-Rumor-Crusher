@@ -2,6 +2,7 @@ import { CATEGORIES, ERAS, ORIGINS, VERDICTS } from '../../content/schema.ts'
 import type { BrowseFilters, SortKey } from './filters.ts'
 import { collectTags } from './filters.ts'
 import type { MergedEntry } from '../../content/merge.ts'
+import CollapsibleGroup, { useGroupOpenState } from '../../components/CollapsibleGroup.tsx'
 
 interface FiltersPanelProps {
   filters: BrowseFilters
@@ -12,66 +13,72 @@ interface FiltersPanelProps {
   onChange: (filters: BrowseFilters, sort: SortKey) => void
 }
 
-function Group<T extends { key: string; label: string }>({
-  title,
+const GROUP_KEYS = ['era', 'cat', 'verdict', 'origin', 'tags', 'read'] as const
+
+function ChipList({
   items,
   selected,
-  onToggle
+  onToggle,
+  small = false
 }: {
-  title: string
-  items: readonly T[]
+  items: readonly { key: string; label: string; count?: number }[]
   selected: string[]
   onToggle: (key: string) => void
+  small?: boolean
 }) {
   return (
-    <section className="mb-4">
-      <h3 className="text-xs tracking-[0.3em] text-inksoft mb-2 border-b border-gold/30 pb-1">{title}</h3>
-      <ul className="flex flex-wrap gap-1.5">
-        {items.map((item) => {
-          const active = selected.includes(item.key)
-          return (
-            <li key={item.key}>
-              <button
-                type="button"
-                aria-pressed={active}
-                className={`px-2 py-0.5 text-sm border transition-colors ${
-                  active
-                    ? 'border-seal text-seal bg-seal/10'
-                    : 'border-gold/40 text-inksoft hover:border-gold hover:text-ink'
-                }`}
-                onClick={() => onToggle(item.key)}
-              >
-                {item.label}
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-    </section>
+    <ul className="flex flex-wrap gap-1.5">
+      {items.map((item) => {
+        const active = selected.includes(item.key)
+        return (
+          <li key={item.key}>
+            <button
+              type="button"
+              aria-pressed={active}
+              className={`border transition-colors ${
+                small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-0.5 text-sm'
+              } ${
+                active
+                  ? 'border-seal text-seal bg-seal/10'
+                  : 'border-gold/40 text-inksoft hover:border-gold hover:text-ink'
+              }`}
+              onClick={() => onToggle(item.key)}
+            >
+              {item.label}
+              {item.count !== undefined && <span className="ml-1 opacity-60">{item.count}</span>}
+            </button>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
 export default function FiltersPanel({ filters, sort, total, shown, entries, onChange }: FiltersPanelProps) {
-  const toggle = (key: keyof BrowseFilters) => (value: string) => {
+  const { openGroups, toggle, setAll } = useGroupOpenState('rumor-archive:filter-groups', ['era'])
+
+  const toggleIn = (key: keyof BrowseFilters) => (value: string) => {
     const list = filters[key] as string[]
     const next = list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
     onChange({ ...filters, [key]: next }, sort)
   }
 
-  const tags = collectTags(entries).slice(0, 24)
+  const tags = collectTags(entries).slice(0, 30)
   const activeCount =
     filters.eras.length + filters.categories.length + filters.verdicts.length + filters.origins.length + filters.tags.length
 
+  const allOpen = GROUP_KEYS.every((k) => openGroups.has(k))
+
   return (
-    <aside className="border border-gold/40 p-4" style={{ backgroundColor: 'var(--c-paper)' }}>
-      <div className="flex items-center justify-between mb-4">
+    <aside className="border border-gold/40 p-4 self-start lg:sticky lg:top-20" style={{ backgroundColor: 'var(--c-paper)' }}>
+      <div className="flex items-center justify-between mb-3">
         <h2 className="font-serifzh font-bold text-lg">卷宗检索台</h2>
-        <span className="text-xs text-inksoft">
+        <span className="text-xs text-inksoft tabular-nums">
           {shown}/{total} 卷
         </span>
       </div>
 
-      <div className="mb-4 flex gap-1 items-center text-sm">
+      <div className="mb-3 flex gap-1 items-center text-sm flex-wrap">
         <span className="text-inksoft text-xs mr-1">排序</span>
         {(
           [
@@ -92,41 +99,54 @@ export default function FiltersPanel({ filters, sort, total, shown, entries, onC
             {label}
           </button>
         ))}
+        <button
+          type="button"
+          className="ml-auto text-xs text-inksoft underline decoration-dotted underline-offset-4 hover:text-seal"
+          onClick={() => setAll(!allOpen, [...GROUP_KEYS])}
+        >
+          {allOpen ? '全部收起' : '全部展开'}
+        </button>
       </div>
 
-      <Group title="时代" items={ERAS} selected={filters.eras} onToggle={toggle('eras')} />
-      <Group title="分类" items={CATEGORIES} selected={filters.categories} onToggle={toggle('categories')} />
-      <Group title="评级" items={VERDICTS} selected={filters.verdicts} onToggle={toggle('verdicts')} />
-      <Group title="谣言来源" items={ORIGINS.map((o) => ({ key: o, label: o }))} selected={filters.origins} onToggle={toggle('origins')} />
+      <CollapsibleGroup title="时代" selectedCount={filters.eras.length} open={openGroups.has('era')} onToggle={() => toggle('era')}>
+        <ChipList items={ERAS} selected={filters.eras} onToggle={toggleIn('eras')} />
+      </CollapsibleGroup>
+
+      <CollapsibleGroup title="分类" selectedCount={filters.categories.length} open={openGroups.has('cat')} onToggle={() => toggle('cat')}>
+        <ChipList items={CATEGORIES} selected={filters.categories} onToggle={toggleIn('categories')} />
+      </CollapsibleGroup>
+
+      <CollapsibleGroup title="评级" selectedCount={filters.verdicts.length} open={openGroups.has('verdict')} onToggle={() => toggle('verdict')}>
+        <ChipList
+          items={VERDICTS.map((v) => ({ key: v.key, label: v.label }))}
+          selected={filters.verdicts}
+          onToggle={toggleIn('verdicts')}
+        />
+      </CollapsibleGroup>
+
+      <CollapsibleGroup title="谣言来源" selectedCount={filters.origins.length} open={openGroups.has('origin')} onToggle={() => toggle('origin')}>
+        <ChipList items={ORIGINS.map((o) => ({ key: o, label: o }))} selected={filters.origins} onToggle={toggleIn('origins')} />
+      </CollapsibleGroup>
 
       {tags.length > 0 && (
-        <section className="mb-4">
-          <h3 className="text-xs tracking-[0.3em] text-inksoft mb-2 border-b border-gold/30 pb-1">标签</h3>
-          <ul className="flex flex-wrap gap-1.5">
-            {tags.map(({ tag, count }) => {
-              const active = filters.tags.includes(tag)
-              return (
-                <li key={tag}>
-                  <button
-                    type="button"
-                    aria-pressed={active}
-                    className={`px-1.5 py-0.5 text-xs border ${
-                      active ? 'border-seal text-seal bg-seal/10' : 'border-gold/40 text-inksoft'
-                    }`}
-                    onClick={() => toggle('tags')(tag)}
-                  >
-                    {tag}
-                    <span className="ml-1 opacity-60">{count}</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
+        <CollapsibleGroup title="标签" selectedCount={filters.tags.length} open={openGroups.has('tags')} onToggle={() => toggle('tags')}>
+          <div className="max-h-52 overflow-y-auto pr-1">
+            <ChipList
+              items={tags.map((t) => ({ key: t.tag, label: t.tag, count: t.count }))}
+              selected={filters.tags}
+              onToggle={toggleIn('tags')}
+              small
+            />
+          </div>
+        </CollapsibleGroup>
       )}
 
-      <section className="mb-4">
-        <h3 className="text-xs tracking-[0.3em] text-inksoft mb-2 border-b border-gold/30 pb-1">已读</h3>
+      <CollapsibleGroup
+        title="已读"
+        selectedCount={filters.readState !== 'all' ? 1 : 0}
+        open={openGroups.has('read')}
+        onToggle={() => toggle('read')}
+      >
         <div className="flex gap-1.5">
           {(
             [
@@ -140,9 +160,7 @@ export default function FiltersPanel({ filters, sort, total, shown, entries, onC
               type="button"
               aria-pressed={filters.readState === key}
               className={`px-2 py-0.5 text-sm border ${
-                filters.readState === key
-                  ? 'border-gold text-gold bg-gold/10'
-                  : 'border-gold/30 text-inksoft'
+                filters.readState === key ? 'border-gold text-gold bg-gold/10' : 'border-gold/30 text-inksoft'
               }`}
               onClick={() => onChange({ ...filters, readState: key }, sort)}
             >
@@ -150,12 +168,12 @@ export default function FiltersPanel({ filters, sort, total, shown, entries, onC
             </button>
           ))}
         </div>
-      </section>
+      </CollapsibleGroup>
 
       {activeCount > 0 && (
         <button
           type="button"
-          className="w-full py-1 text-sm text-seal border border-seal/50 hover:bg-seal/10"
+          className="w-full mt-3 py-1 text-sm text-seal border border-seal/50 hover:bg-seal/10"
           onClick={() =>
             onChange({ ...filters, eras: [], categories: [], verdicts: [], origins: [], tags: [] }, sort)
           }
