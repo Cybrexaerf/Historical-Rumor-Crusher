@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { RandomButton } from './hooks'
 
 const NAV = [
-  { to: '/', label: '档案大厅' },
   { to: '/browse', label: '总目录' },
   { to: '/timeline', label: '时代长卷' },
   { to: '/search', label: '检索' },
@@ -12,13 +12,16 @@ const NAV = [
 export default function Layout() {
   const { pathname } = useLocation()
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-gold/40 bg-paper sticky top-0 z-40">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--c-paper-deep)' }}>
+      <header className="sticky top-0 z-40 border-b border-gold/40" style={{ backgroundColor: 'var(--c-paper)' }}>
         <nav className="mx-auto max-w-6xl px-4 py-2 flex items-center gap-4 flex-wrap">
-          <Link to="/" className="font-serifzh font-bold text-lg tracking-widest">
+          <Link to="/" className="font-serifzh font-black text-xl tracking-[0.3em]">
             史实勘误局
           </Link>
-          <ul className="flex gap-3 text-sm flex-wrap">
+          <span className="hidden sm:inline text-xs text-inksoft border-l border-gold/40 pl-4">
+            历史谣言澄清档案馆
+          </span>
+          <ul className="flex gap-1 text-sm flex-wrap ml-auto">
             {NAV.map((n) => (
               <li key={n.to}>
                 <Link
@@ -34,13 +37,14 @@ export default function Layout() {
               </li>
             ))}
           </ul>
+          <RandomButton />
         </nav>
       </header>
-      <main className="flex-1">
+      <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-6">
         <Outlet />
       </main>
       <footer className="border-t border-gold/40 py-3 text-center text-xs text-inksoft">
-        史实勘误局 · 本地离线馆藏 · 内容以卷尾参考文献为准
+        史实勘误局 · 本地离线馆藏 · 卷内陈述以卷尾参考文献为准
       </footer>
     </div>
   )

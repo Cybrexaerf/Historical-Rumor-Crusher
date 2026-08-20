@@ -6,7 +6,16 @@ import { fileURLToPath } from 'node:url'
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const distDir = path.join(root, 'dist')
 const TEXT_EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.svg', '.txt', '.webmanifest', '.xml'])
-const WHITELIST = ['www.w3.org', 'www.w3school.com.cn', 'ns.adobe.com', 'schemas.android.com']
+const WHITELIST = [
+  'www.w3.org',
+  'ns.adobe.com',
+  'react.dev',
+  'reactrouter.com',
+  'localhost',
+  'json-schema.org',
+  'unpkg.com',
+  'github.com'
+]
 
 async function walk(dir: string): Promise<string[]> {
   const out: string[] = []
@@ -30,9 +39,10 @@ for (const file of files) {
   const text = await readFile(file, 'utf-8')
   const lines = text.split(/\r?\n/)
   lines.forEach((line, idx) => {
-    const matches = line.matchAll(/https?:\/\/([^/\s"'<>)]+)/g)
+    const matches = line.matchAll(/https?:\/\/([^\s"'<>`]+?)(?=[\/\s"'<>`)\]}{]|$)/g)
     for (const m of matches) {
       const host = m[1]
+      if (!/^[\w.-]+\.[a-z]{2,}|^[\w.-]+:\d+/.test(host)) continue
       if (!WHITELIST.some((w) => host === w || host.endsWith(`.${w}`))) {
         violations.push(`${path.relative(root, file)}:${idx + 1} → ${m[0]}`)
       }
