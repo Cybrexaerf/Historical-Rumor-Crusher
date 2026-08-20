@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/build-content.mts && vite build && node scripts/check-offline.mts",
+    "build": "node scripts/build-content.mts && vite build && node scripts/copy-assets.mts && node scripts/check-offline.mts",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",

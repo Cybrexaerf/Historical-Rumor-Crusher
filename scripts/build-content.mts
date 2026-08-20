@@ -3,7 +3,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { JSDOM } from 'jsdom'
 import { pinyin } from 'pinyin-pro'
-import { createNodeSanitizer, parseEntry } from '../src/content/parse-entry.ts'
+import { createNodeSanitizer, parseEntry, splitFrontmatter } from '../src/content/parse-entry.ts'
+import { rewriteEntryImages } from './lib/rewrite-images.mts'
 import { CATEGORY_KEYS, VERDICT_KEYS } from '../src/content/schema.ts'
 import type { EntryMeta, FulltextDoc, Manifest } from '../src/content/schema.ts'
 
@@ -44,7 +45,12 @@ let failed = false
 for (const file of files) {
   const rel = path.relative(root, file)
   const raw = await readFile(file, 'utf-8')
-  const result = parseEntry(raw, rel, sanitize)
+  if (!splitFrontmatter(raw)) {
+    console.error(`  [校验失败] ${rel}: 缺少 front-matter（须以 --- 开始）`)
+    failed = true
+    continue
+  }
+  const result = parseEntry(rewriteEntryImages(raw), rel, sanitize)
   if (!result.ok) {
     for (const err of result.errors) console.error(`  [校验失败] ${err}`)
     failed = true
