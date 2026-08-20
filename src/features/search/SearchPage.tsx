@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { useArchive } from '../../content/store.ts'
 import { searchIndex } from '../../search/client.ts'
 import { segmentZh } from '../../search/tokenize.ts'
-import { eraLabel, verdictMeta } from '../../content/schema.ts'
-import { ERAS } from '../../content/schema.ts'
+import { ERAS, eraLabel, verdictMeta } from '../../content/schema.ts'
 import Highlight from './Highlight.tsx'
+import EmptyState from '../../components/EmptyState.tsx'
 
 type Scope = 'all' | 'title' | 'rumor'
 
@@ -34,14 +34,18 @@ export default function SearchPage() {
   }, [scope, debounced, entries])
 
   const [hits, setHits] = useState<{ id: string; score: number }[]>([])
+  const [searching, setSearching] = useState(false)
   useEffect(() => {
     if (!debounced.trim()) {
       setHits([])
+      setSearching(false)
       return
     }
+    setSearching(true)
     const start = performance.now()
     void searchIndex(debounced).then((h) => {
       setHits(h)
+      setSearching(false)
       setElapsed(Math.round(performance.now() - start))
     })
   }, [debounced])
@@ -99,15 +103,21 @@ export default function SearchPage() {
         </div>
       </div>
       <p className="text-xs text-inksoft mb-4" aria-live="polite">
-        {debounced.trim()
-          ? `命中 ${filtered.length} 卷 · 耗时 ${elapsed}ms`
-          : '共索引全馆卷宗的标题、谣言陈述与正文。'}
+        {searching
+          ? null
+          : debounced.trim()
+            ? `命中 ${filtered.length} 卷 · 耗时 ${elapsed}ms`
+            : '共索引全馆卷宗的标题、谣言陈述与正文。'}
       </p>
 
-      {debounced.trim() && filtered.length === 0 && (
-        <p className="p-8 text-center text-inksoft border border-dashed border-gold/40">
-          未见相关卷宗——换个关键词，或试试拼音。
+      {searching && (
+        <p className="p-8 text-center text-inksoft anim-dots" role="status">
+          调档中
         </p>
+      )}
+
+      {!searching && debounced.trim() && filtered.length === 0 && (
+        <EmptyState stamp="未寻" title="此档未立" hint="未见相关卷宗——换个关键词，或试试拼音。" />
       )}
 
       {grouped.map((g) => (

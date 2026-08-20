@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useArchive } from '../../content/store.ts'
 import VirtualList from '../../components/VirtualList.tsx'
+import EmptyState from '../../components/EmptyState.tsx'
 import FiltersPanel from './FiltersPanel.tsx'
 import EntryCard from './EntryCard.tsx'
 import { applyFilters, deserializeFilters, serializeFilters, type BrowseFilters, type SortKey } from './filters.ts'
@@ -35,7 +36,7 @@ export default function Browse() {
       <section className="border border-gold/40" style={{ backgroundColor: 'var(--c-paper)' }}>
         <h1 className="sr-only">总目录</h1>
         {shown.length === 0 ? (
-          <p className="p-8 text-center text-inksoft">没有符合条件的卷宗，试试放宽筛选。</p>
+          <EmptyState stamp="无卷" title="没有符合条件的卷宗" hint="试试放宽筛选。" />
         ) : shown.length > 60 ? (
           <VirtualList
             items={shown}

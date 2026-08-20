@@ -61,4 +61,93 @@
   .entry-prose hr.footnotes-sep {
     display: none;
   }
+
+  /* 档案馆表格 */
+  .entry-prose table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.2em 0;
+    font-size: 0.95em;
+    background-color: var(--c-paper);
+  }
+  .entry-prose thead th {
+    background-color: rgba(138, 109, 47, 0.14);
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .entry-prose th,
+  .entry-prose td {
+    border: 1px solid rgba(138, 109, 47, 0.45);
+    padding: 0.45em 0.8em;
+    text-align: left;
+    vertical-align: top;
+  }
+  .entry-prose tbody tr:nth-child(even) {
+    background-color: rgba(138, 109, 47, 0.05);
+  }
+
+  /* 档案框图片/图示 */
+  .entry-prose img {
+    display: block;
+    max-width: min(100%, 560px);
+    margin: 1.4em auto;
+    padding: 10px;
+    border: 1px solid rgba(138, 109, 47, 0.55);
+    outline: 1px solid rgba(138, 109, 47, 0.25);
+    outline-offset: 3px;
+    background-color: var(--c-paper);
+    box-shadow: 0 2px 8px rgba(43, 38, 32, 0.15);
+  }
+  .entry-prose img + em {
+    display: block;
+    text-align: center;
+    font-size: 0.85em;
+    color: var(--c-ink-soft);
+    margin-top: -0.6em;
+  }
+
+  /* 考证区块：首字下沉 + 段首编目符 */
+  .sec-evidence .entry-prose > p:first-child::first-letter {
+    float: left;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+    font-weight: 900;
+    font-size: 3.1em;
+    line-height: 0.85;
+    padding: 0.08em 0.12em 0 0;
+    color: var(--c-seal);
+  }
+  .sec-evidence .entry-prose > p + p::before {
+    content: '◆ ';
+    color: var(--c-gold);
+    font-size: 0.68em;
+    vertical-align: 0.28em;
+    letter-spacing: 0.1em;
+  }
+
+  /* 纸面四角裁切线 */
+  .crop-marks {
+    position: relative;
+  }
+  .crop-marks::before,
+  .crop-marks::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .crop-marks::before {
+    top: 10px;
+    left: 10px;
+    border-top: 1px solid var(--c-gold);
+    border-left: 1px solid var(--c-gold);
+  }
+  .crop-marks::after {
+    bottom: 10px;
+    right: 10px;
+    border-bottom: 1px solid var(--c-gold);
+    border-right: 1px solid var(--c-gold);
+  }
 }

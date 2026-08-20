@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useArchive } from '../../content/store.ts'
 import { eraLabel, verdictMeta } from '../../content/schema.ts'
+import EmptyState from '../../components/EmptyState.tsx'
 
-function CardList({ ids, empty }: { ids: string[]; empty: string }) {
+function CardList({ ids, empty, stamp }: { ids: string[]; empty: string; stamp: string }) {
   const merged = useArchive((s) => s.merged)
   if (ids.length === 0) {
-    return <p className="text-sm text-inksoft border border-dashed border-gold/40 p-6 text-center">{empty}</p>
+    return <EmptyState stamp={stamp} title="空空如也" hint={empty} />
   }
   return (
     <ul className="space-y-2">
@@ -45,17 +46,17 @@ export default function BookmarksPage() {
           <h2 className="font-serifzh font-bold text-lg mb-3 border-b border-gold/40 pb-1">
             收藏 ★ <span className="text-sm text-inksoft">{user.bookmarks.length}</span>
           </h2>
-          <CardList ids={user.bookmarks} empty="还没有收藏。在卷宗页点击「收藏本卷」即可加入。" />
+          <CardList ids={user.bookmarks} stamp="未藏" empty="还没有收藏。在卷宗页点击「收藏本卷」即可加入。" />
         </section>
         <section aria-label="已读">
           <h2 className="font-serifzh font-bold text-lg mb-3 border-b border-gold/40 pb-1">
             已读 <span className="text-sm text-inksoft">{user.read.length}/{total}</span>
           </h2>
-          <CardList ids={user.read} empty="尚无已读记录。点开卷宗即自动记为已读。" />
+          <CardList ids={user.read} stamp="未启" empty="尚无已读记录。点开卷宗即自动记为已读。" />
         </section>
         <section aria-label="最近浏览">
           <h2 className="font-serifzh font-bold text-lg mb-3 border-b border-gold/40 pb-1">最近浏览</h2>
-          <CardList ids={user.recent} empty="暂无浏览记录。" />
+          <CardList ids={user.recent} stamp="无痕" empty="暂无浏览记录。" />
         </section>
       </div>
     </div>

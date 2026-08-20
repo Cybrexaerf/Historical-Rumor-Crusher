@@ -35,8 +35,12 @@ export default function Seal({
         transform: `rotate(${((text.length * 37) % 7) - 3}deg)`,
         opacity: 0.92,
         maskImage:
-          'radial-gradient(circle at 30% 20%, transparent 0 2px, black 3px), radial-gradient(circle at 80% 90%, transparent 0 1px, black 2px)',
-        WebkitMaskImage: 'none'
+          'radial-gradient(circle at 30% 20%, transparent 0 2px, black 3px), radial-gradient(circle at 80% 90%, transparent 0 1px, black 2px), radial-gradient(circle at 55% 75%, transparent 0 1.5px, black 2.5px), radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.82) 55%, rgba(0,0,0,0.35) 88%)',
+        maskComposite: 'intersect',
+        WebkitMaskImage:
+          'radial-gradient(circle at 30% 20%, transparent 0 2px, black 3px), radial-gradient(circle at 80% 90%, transparent 0 1px, black 2px), radial-gradient(circle at 55% 75%, transparent 0 1.5px, black 2.5px), radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.82) 55%, rgba(0,0,0,0.35) 88%)',
+        WebkitMaskComposite: 'source-in',
+        filter: 'blur(0.2px) contrast(1.08)'
       }}
     >
       {text}

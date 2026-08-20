@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useArchive } from '../../content/store.ts'
 import { sectionize } from '../../content/sectionize.ts'
 import Seal from '../../components/Seal.tsx'
+import EmptyState from '../../components/EmptyState.tsx'
 import SectionRenderer from './SectionRenderer.tsx'
 import ReferencesList from './ReferencesList.tsx'
 import DossierSidebar from './DossierSidebar.tsx'
@@ -44,17 +45,17 @@ export default function EntryPage() {
 
   if (!entry) {
     return (
-      <div className="p-12 text-center">
-        <p className="text-lg mb-4">查无此卷。可能已被移除，或档号有误。</p>
-        <Link to="/browse" className="text-seal underline underline-offset-4">
+      <EmptyState stamp="查无" title="查无此卷" hint="可能已被移除，或档号有误。">
+        <Link to="/browse" className="text-seal underline underline-offset-4 mt-3 inline-block">
           ← 返回总目录
         </Link>
-      </div>
+      </EmptyState>
     )
   }
 
   const m = entry.meta
   const bookmarked = bookmarks.includes(id)
+  const volumeNo = merged.entries.findIndex((e) => e.id === id) + 1
 
   return (
     <div>
@@ -62,7 +63,10 @@ export default function EntryPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
         <DossierSidebar entry={entry} sections={sections} onFontSize={setFontSize} fontSize={fontSize} />
 
-        <div style={{ backgroundColor: 'var(--c-paper)' }} className="border border-gold/40 px-6 py-8 md:px-10">
+        <div
+          className="anim-page-turn border border-gold/40 px-6 py-8 md:px-10 crop-marks"
+          style={{ backgroundColor: 'var(--c-paper)' }}
+        >
           {/* 举报信：谣言原始陈述 */}
           <section
             className="border-2 border-seal/70 p-6 mb-2 relative"
@@ -112,6 +116,10 @@ export default function EntryPage() {
               </button>
             )}
           </nav>
+
+          <p className="mt-6 text-center text-xs text-inksoft tracking-[0.25em]">
+            本卷为馆藏第 {volumeNo} 卷 · 共 {merged.entries.length} 卷 · 档号 {m.id}
+          </p>
         </div>
       </div>
     </div>
