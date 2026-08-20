@@ -52,6 +52,7 @@ references:
 
 - 受控词表唯一定义在 `src/content/schema.ts`；校验失败构建即中止并给出中文定位。
 - 新建模板：`npm run content:new`。
+- **AI 辅助批量编写**：将 `docs/ai-authoring-guide.md` 整份投喂给 AI，即可按本馆规范产出可直接导入的卷宗 md（文档示例已通过真实校验器测试）。
 - 正文禁止外链（离线铁律），raw HTML 一律转义，渲染产物经 DOMPurify。
 
 ## 内容更新策略
