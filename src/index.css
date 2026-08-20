@@ -17,6 +17,16 @@
   ::selection {
     background: rgba(168, 53, 44, 0.2);
   }
+  [data-theme='dark'] ::selection {
+    background: rgba(212, 90, 76, 0.35);
+  }
+  /* 暗夜特藏室：顶部暖光射灯 */
+  [data-theme='dark'] body {
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% -8%, rgba(214, 178, 104, 0.13), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(214, 178, 104, 0.05), transparent 70%);
+    background-attachment: fixed;
+  }
 }
 
 @layer components {

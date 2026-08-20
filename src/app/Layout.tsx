@@ -1,5 +1,26 @@
+import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { RandomButton } from './hooks'
+import { getStoredTheme, setTheme, type Theme } from '../design/theme.ts'
+
+function ThemeToggle() {
+  const [current, setCurrent] = useState<Theme>(() => getStoredTheme())
+  const next: Theme = current === 'dark' ? 'light' : 'dark'
+  return (
+    <button
+      type="button"
+      aria-label={current === 'dark' ? '切换到亮色阅览室' : '切换到暗夜特藏室'}
+      title={current === 'dark' ? '亮色阅览室' : '暗夜特藏室'}
+      className="w-8 h-8 border border-gold/50 leading-none text-sm hover:bg-gold/10"
+      onClick={() => {
+        setTheme(next)
+        setCurrent(next)
+      }}
+    >
+      {current === 'dark' ? '☀' : '☾'}
+    </button>
+  )
+}
 
 const NAV = [
   { to: '/browse', label: '总目录' },
@@ -38,6 +59,7 @@ export default function Layout() {
               </li>
             ))}
           </ul>
+          <ThemeToggle />
           <RandomButton />
         </nav>
       </header>

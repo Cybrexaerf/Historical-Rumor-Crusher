@@ -65,7 +65,7 @@ export default function SectionRenderer({ sections, footnotes, verdict }: Sectio
             className={`${style.wrap} ${s.key === 'evidence' ? 'sec-evidence' : ''}`}
             style={
               isVerdict
-                ? { backgroundColor: 'var(--c-verdict-green)', color: '#f4edda', boxShadow: '0 2px 10px rgba(43,38,32,0.25)' }
+                ? { backgroundColor: 'var(--c-verdict-green)', color: 'var(--c-paper)', boxShadow: '0 2px 10px var(--c-shadow-strong)' }
                 : undefined
             }
           >

@@ -9,6 +9,10 @@
   --c-verdict-partial: #b07a2a;
   --c-verdict-disputed: #5a6b7a;
   --c-verdict-open: #8a8578;
+  /* 色块填充上的文字（两主题通用暖米白） */
+  --c-text-on-fill: #f4edda;
+  --c-shadow: rgba(43, 38, 32, 0.12);
+  --c-shadow-strong: rgba(43, 38, 32, 0.3);
 
   --fs-body: 17px;
   --lh-body: 1.9;
@@ -25,6 +29,24 @@
 
   --font-scale: 1;
   --lh-scale: 1;
+}
+
+/* ——— B 主题「暗夜特藏室」：档案在射灯下 ——— */
+[data-theme='dark'] {
+  --c-paper: #26221a;
+  --c-paper-deep: #1c1913;
+  --c-ink: #ece2c8;
+  --c-ink-soft: #b3a789;
+  --c-gold: #c9a55e;
+  --c-seal: #d45a4c;
+  --c-verdict-green: #6fa37c;
+  --c-verdict-partial: #d29a45;
+  --c-verdict-disputed: #8ba0b3;
+  --c-verdict-open: #948d7c;
+  --c-text-on-fill: #1c1913;
+  --c-shadow: rgba(0, 0, 0, 0.45);
+  --c-shadow-strong: rgba(0, 0, 0, 0.65);
+  color-scheme: dark;
 }
 
 [data-fontsize='large'] {

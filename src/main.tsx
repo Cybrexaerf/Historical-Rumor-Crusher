@@ -5,6 +5,9 @@ import App from './App'
 import '@fontsource/noto-serif-sc/chinese-simplified-400.css'
 import '@fontsource/noto-serif-sc/chinese-simplified-900.css'
 import './index.css'
+import { applyTheme, getStoredTheme } from './design/theme.ts'
+
+applyTheme(getStoredTheme())
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
