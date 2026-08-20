@@ -5,6 +5,7 @@ import { parseMdForImport, recordToMarkdown, downloadText } from '../../content/
 import DropZone from './DropZone.tsx'
 import ConflictDialog from './ConflictDialog.tsx'
 import CorrectionInbox from './CorrectionInbox.tsx'
+import BatchManager from './BatchManager.tsx'
 
 interface Report {
   file: string
@@ -162,6 +163,8 @@ export default function ImportsPage() {
           </ul>
         )}
       </section>
+
+      <BatchManager />
 
       <CorrectionInbox />
 

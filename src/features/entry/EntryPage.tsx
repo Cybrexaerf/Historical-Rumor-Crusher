@@ -47,8 +47,13 @@ export default function EntryPage() {
   }, [entry, merged.entries])
 
   if (!entry) {
+    const retired = useArchive.getState().user.retired.includes(id)
     return (
-      <EmptyState stamp="查无" title="查无此卷" hint="可能已被移除，或档号有误。">
+      <EmptyState
+        stamp={retired ? '下架' : '查无'}
+        title={retired ? '此卷已下架' : '查无此卷'}
+        hint={retired ? '本卷已被馆主下架，可在「导入管理 → 馆务室」恢复上架。' : '可能已被移除，或档号有误。'}
+      >
         <Link to="/browse" className="text-seal underline underline-offset-4 mt-3 inline-block">
           ← 返回总目录
         </Link>

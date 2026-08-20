@@ -2,18 +2,33 @@ import { useState } from 'react'
 import type { MergedEntry } from '../../content/merge.ts'
 import type { CorrectionFile } from '../imports/corrections.ts'
 import { downloadText } from '../../content/md-runtime.ts'
+import { githubIssueUrl } from '../../config.ts'
 
 interface CorrectionButtonProps {
   entry: MergedEntry
 }
 
-/** 卷尾「提交勘误」：生成勘误单 JSON 文件，邮寄给馆主 */
+/** 卷尾「提交勘误」：在线版直跳 GitHub Issue；离线版生成勘误单文件邮寄给馆主 */
 export default function CorrectionButton({ entry }: CorrectionButtonProps) {
   const [open, setOpen] = useState(false)
   const [location, setLocation] = useState('')
   const [evidence, setEvidence] = useState('')
   const [contact, setContact] = useState('')
   const [done, setDone] = useState(false)
+
+  const issueUrl = githubIssueUrl(
+    `[勘误] ${entry.meta.title}`,
+    [
+      `**档号**：${entry.id}`,
+      `**卷宗**：${entry.meta.title}`,
+      `**错误位置**：${location || '（请在 Issue 模板中填写）'}`,
+      `**勘误依据**：${evidence || '（请在 Issue 模板中填写）'}`,
+      contact ? `**联系**：${contact}` : '',
+      `**来源页面**：${typeof window !== 'undefined' ? window.location.href : ''}`
+    ]
+      .filter(Boolean)
+      .join('\n\n')
+  )
 
   const submit = () => {
     if (!location.trim() || !evidence.trim()) return
@@ -106,6 +121,16 @@ export default function CorrectionButton({ entry }: CorrectionButtonProps) {
                   />
                 </label>
                 <div className="flex justify-end gap-3 pt-2">
+                  {issueUrl && (
+                    <a
+                      href={issueUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2 border border-gold/60 text-sm hover:bg-gold/10"
+                    >
+                      转 GitHub 在线提交
+                    </a>
+                  )}
                   <button
                     type="button"
                     className="px-4 py-2 border border-gold/60 text-sm hover:bg-gold/10"

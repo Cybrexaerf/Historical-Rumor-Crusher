@@ -29,6 +29,8 @@ interface ArchiveState {
   pushRecent: (id: string) => void
   incrementViews: (id: string) => void
   setFontSize: (size: UserData['fontSize']) => void
+  retireEntries: (ids: string[]) => void
+  restoreEntries: (ids: string[]) => void
 }
 
 const EMPTY_INDEX: MergedIndex = {
@@ -37,15 +39,39 @@ const EMPTY_INDEX: MergedIndex = {
   stats: { total: 0, imported: 0, conflicts: 0, byVerdict: {}, byEra: {}, byCategory: {} }
 }
 
-function reindex(imports: ImportRecord[]): MergedIndex {
-  return mergeEntries(manifest.entries, imports.map((im) => im.meta))
+function reindex(imports: ImportRecord[], retired: string[]): MergedIndex {
+  const retiredSet = new Set(retired)
+  const merged = mergeEntries(manifest.entries, imports.map((im) => im.meta))
+  if (retiredSet.size === 0) return merged
+  const entries = merged.entries.filter((e) => !retiredSet.has(e.id))
+  const byId = new Map(entries.map((e) => [e.id, e]))
+  const count = (pick: (e: (typeof entries)[number]) => string): Record<string, number> => {
+    const acc: Record<string, number> = {}
+    for (const e of entries) {
+      const k = pick(e)
+      acc[k] = (acc[k] ?? 0) + 1
+    }
+    return acc
+  }
+  return {
+    entries,
+    byId,
+    stats: {
+      total: entries.length,
+      imported: entries.filter((e) => e.source === 'imported').length,
+      conflicts: entries.filter((e) => e.conflictEqualRevision).length,
+      byVerdict: count((e) => e.meta.verdict),
+      byEra: count((e) => e.meta.era),
+      byCategory: count((e) => e.meta.category)
+    }
+  }
 }
 
 export const useArchive = create<ArchiveState>((set, get) => ({
   ready: false,
   merged: EMPTY_INDEX,
   imports: [],
-  user: { bookmarks: [], read: [], recent: [], fontSize: 'normal', views: {}, openedAt: null },
+  user: { bookmarks: [], read: [], recent: [], fontSize: 'normal', views: {}, openedAt: null, retired: [] },
   bodies: {},
 
   async init() {
@@ -56,7 +82,7 @@ export const useArchive = create<ArchiveState>((set, get) => ({
       saveUserData(user)
     }
     applyFontSize(user.fontSize)
-    set({ imports, user, merged: reindex(imports), ready: true })
+    set({ imports, user, merged: reindex(imports, user.retired), ready: true })
   },
 
   async loadEntry(id) {
@@ -87,14 +113,14 @@ export const useArchive = create<ArchiveState>((set, get) => ({
     }
     await putImport(record)
     const imports = await getAllImports()
-    set({ imports, merged: reindex(imports) })
+    set({ imports, merged: reindex(imports, get().user.retired) })
     return outcome
   },
 
   async removeImport(id) {
     await deleteImport(id)
     const imports = await getAllImports()
-    set({ imports, merged: reindex(imports) })
+    set({ imports, merged: reindex(imports, get().user.retired) })
   },
 
   toggleBookmark(id) {
@@ -136,6 +162,22 @@ export const useArchive = create<ArchiveState>((set, get) => ({
     saveUserData(next)
     applyFontSize(size)
     set({ user: next })
+  },
+
+  retireEntries(ids) {
+    const { user, imports } = get()
+    const retired = [...new Set([...user.retired, ...ids])]
+    const next = { ...user, retired }
+    saveUserData(next)
+    set({ user: next, merged: reindex(imports, retired) })
+  },
+
+  restoreEntries(ids) {
+    const { user, imports } = get()
+    const retired = user.retired.filter((r) => !ids.includes(r))
+    const next = { ...user, retired }
+    saveUserData(next)
+    set({ user: next, merged: reindex(imports, retired) })
   }
 }))
 

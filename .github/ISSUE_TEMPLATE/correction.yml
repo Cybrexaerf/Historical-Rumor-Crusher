@@ -1,0 +1,34 @@
+name: 勘误上报
+description: 发现卷宗叙述错误或有史料可补充时使用此模板
+labels: ['勘误']
+body:
+  - type: input
+    id: entry
+    attributes:
+      label: 档号 / 卷宗标题
+      description: 在卷宗页左侧封皮可看到档号（如 qianlong-hanrein）
+      placeholder: qianlong-hanrein · 乾隆是汉人陈世倌之子？
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: 错误位置
+      description: 章节 / 段落 / 原句
+      placeholder: 史料考证 第二段「页码 412-415」
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 勘误依据
+      description: 请给出史料出处或正确表述，便于馆主核验修订
+      placeholder: 如：《雍正传》1985 年版页码应为 412-416……
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: 联系方式（可选）
+      description: 便于修订后回执
+      placeholder: 昵称 / 邮箱

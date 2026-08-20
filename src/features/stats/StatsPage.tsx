@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useArchive } from '../../content/store.ts'
 import { manifest } from '../../content/load-manifest.ts'
 import { computeAchievements } from './achievements.ts'
@@ -130,7 +131,8 @@ export default function StatsPage() {
     : 0
   const openedLabel = user.openedAt ? user.openedAt.slice(0, 10) : '——'
 
-  const updatedList = useArchive((s) => s.merged.entries.map((e) => e.meta.updated).sort())
+  const allEntries = useArchive((s) => s.merged.entries)
+  const updatedList = useMemo(() => allEntries.map((e) => e.meta.updated).sort(), [allEntries])
   const firstArchived = updatedList[0] ?? '——'
   const lastArchived = updatedList[updatedList.length - 1] ?? '——'
 

@@ -9,6 +9,8 @@ export interface UserData {
   views: Record<string, number>
   /** 首次开馆日期 ISO（建馆纪念） */
   openedAt: string | null
+  /** 下架（隐藏）的档号清单——内置卷宗无法物理删除，下架即全馆隐藏 */
+  retired: string[]
 }
 
 const DEFAULT: UserData = {
@@ -17,7 +19,8 @@ const DEFAULT: UserData = {
   recent: [],
   fontSize: 'normal',
   views: {},
-  openedAt: null
+  openedAt: null,
+  retired: []
 }
 
 export function loadUserData(): UserData {
@@ -31,7 +34,8 @@ export function loadUserData(): UserData {
       recent: parsed.recent ?? [],
       fontSize: parsed.fontSize ?? 'normal',
       views: parsed.views ?? {},
-      openedAt: parsed.openedAt ?? null
+      openedAt: parsed.openedAt ?? null,
+      retired: parsed.retired ?? []
     }
   } catch {
     return { ...DEFAULT }

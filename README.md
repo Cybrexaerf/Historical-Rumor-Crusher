@@ -4,21 +4,42 @@ Windows 离线运行的纯静态 Web 应用：收录、拆解、澄清网络流�
 
 ## 分发与更新（GitHub Pages）
 
-朋友们通过网址在线访问，你 push 到 main 即自动全网更新：
+朋友们通过网址在线访问，你 push 到 main 即自动全网更新。**完整步骤：**
 
-1. 在 GitHub 新建仓库（私有亦可，私有则朋友需登录且被加为协作者；公开则任何人可访问）。
-2. 推送本仓库：`git remote add origin <你的仓库地址> && git push -u origin main`。
-3. 仓库 **Settings → Pages → Source 选「GitHub Actions」**。推送后 Actions 自动构建部署，
-   网址为 `https://<用户名>.github.io/<仓库名>/`。
+```bash
+# ① 在 github.com 上新建一个空仓库（名字随意，如 rumor-archive；公开/私有均可——
+#    私有仓库的朋友需被加为协作者才能访问 Pages）
+# ② 本地关联并推送（首次）：
+git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+git push -u origin main
+# ③ 仓库网页上：Settings → Pages → Source 选「GitHub Actions」
+#    等待 Actions 跑完（约 1 分钟），即得到网址：
+#    https://<用户名>.github.io/<仓库名>/
+```
 
-内容更新流程：改/增 `content/*.md` → commit → push → 约 1 分钟后朋友们刷新即得新版。
-在线版与 `file://` 离线版数据格式一致；离线分发仍可整包拷贝 `dist/`。
+之后每次内容更新：改/增 `content/*.md` → `git add -A && git commit -m "..."` → `git push`，
+朋友们刷新网页即得新版。在线版与 `file://` 离线版数据格式一致；仍可整包拷贝 `dist/` 离线分发。
+
+## 在线勘误（GitHub Issue）
+
+1. 编辑 `src/config.ts`，填入 `GITHUB_REPO = '你的用户名/仓库名'`，push 重新部署。
+2. 朋友在在线版任一卷宗页点「勘误上报」，填写后可一键「转 GitHub 在线提交」——
+   自动跳转到你仓库的 Issue 新建页，标题与正文已预填（仓库含 `correction.yml` 表单模板）。
+3. 你在仓库 Issues 里看到反馈 → 修订 `content/<id>.md`（revision +1）→ push → Issue 自动关闭即闭环。
+   离线朋友仍可用「下载勘误单 JSON → 导入管理 → 勘误收件箱」的本地流程。
 
 ## 勘误反馈（朋友 → 馆主）
 
-朋友在任一卷宗页点「勘误上报」，填写位置与依据 → 下载勘误单 JSON → 微信/邮件发给馆主。
-馆主在「导入管理 → 勘误收件箱」导入该文件，逐条「采纳 / 驳回」；采纳后按提示修订
-对应 `content/<id>.md`（revision +1）再 push。被采纳的勘误会点亮「馆志 → 勘误协助者」成就。
+朋友在任一卷宗页点「勘误上报」：在线版可直跳 GitHub Issue（需配置 `src/config.ts`），
+离线版填写后下载勘误单 JSON 发给馆主。馆主在「导入管理 → 勘误收件箱」导入文件（或直接看
+GitHub Issues），逐条「采纳 / 驳回」；采纳后按提示修订对应 `content/<id>.md`（revision +1）
+再 push。被采纳的勘误会点亮「馆志 → 勘误协助者」成就。
+
+## 卷宗管理（馆务室）
+
+「导入管理 → 馆务室」支持全馆卷宗批量管理：多选后可**下架**（内置卷宗无法物理删除——
+它们打包在应用里，下架即从目录/检索/长卷/馆志全馆隐藏，可随时恢复上架）、移除本地导入、
+批量导出本地导入为 md。
 
 ## 运行
 
