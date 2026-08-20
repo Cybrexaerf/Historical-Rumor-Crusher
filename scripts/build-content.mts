@@ -74,19 +74,6 @@ const stats: Record<string, number> = {}
 for (const v of VERDICT_KEYS) stats[v] = metas.filter((m) => m.verdict === v).length
 for (const c of CATEGORY_KEYS) stats[c] = metas.filter((m) => m.category === c).length
 
-const manifest: Manifest = {
-  builtAt: new Date().toISOString(),
-  total: metas.length,
-  stats,
-  entries: metas
-}
-
-await rm(outDir, { recursive: true, force: true })
-await mkdir(path.join(outDir, 'entries'), { recursive: true })
-await mkdir(path.join(outDir, 'chunks'), { recursive: true })
-
-await writeFile(path.join(outDir, 'manifest.json'), JSON.stringify(manifest), 'utf-8')
-
 const docs: FulltextDoc[] = metas.map((meta) => {
   const pinyinText = pinyinOf(`${meta.title} ${meta.rumor}`)
   return {
@@ -101,6 +88,19 @@ const docs: FulltextDoc[] = metas.map((meta) => {
 
 stats.wordCount = docs.reduce((acc, d) => acc + d.fulltext.length, 0)
 stats.refCount = metas.reduce((acc, m) => acc + m.references.length, 0)
+
+const manifest: Manifest = {
+  builtAt: new Date().toISOString(),
+  total: metas.length,
+  stats,
+  entries: metas
+}
+
+await rm(outDir, { recursive: true, force: true })
+await mkdir(path.join(outDir, 'entries'), { recursive: true })
+await mkdir(path.join(outDir, 'chunks'), { recursive: true })
+
+await writeFile(path.join(outDir, 'manifest.json'), JSON.stringify(manifest), 'utf-8')
 
 for (let i = 0; i < metas.length; i++) {
   const meta = metas[i]
