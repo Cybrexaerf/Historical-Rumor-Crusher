@@ -67,7 +67,7 @@ export const EntryMetaSchema = z.object({
   verdict: z.enum(VERDICT_KEYS),
   era: z.enum(ERA_KEYS),
   category: z.enum(CATEGORY_KEYS),
-  tags: z.array(z.string().min(1).max(12)).min(1).max(8),
+  tags: z.array(z.coerce.string().min(1).max(12)).min(1).max(8),
   origin: z.enum(ORIGINS),
   evidence: z.enum(EVIDENCE_LEVELS),
   updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'updated 须为 YYYY-MM-DD'),
