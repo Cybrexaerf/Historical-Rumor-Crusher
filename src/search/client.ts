@@ -41,8 +41,12 @@ async function init(): Promise<void> {
     worker = null
   }
   if (worker) {
+    let builtResolve: (() => void) | null = null
     worker.onmessage = (e: MessageEvent<OutboundMsg>) => {
-      if (e.data.type === 'built') return
+      if (e.data.type === 'built') {
+        builtResolve?.()
+        return
+      }
       const msg = e.data
       pending = pending.filter((p) => {
         if (p.query === msg.query) {
@@ -53,11 +57,7 @@ async function init(): Promise<void> {
       })
     }
     const built = new Promise<void>((resolve, reject) => {
-      const onmsg = worker!.onmessage
-      worker!.onmessage = (e: MessageEvent<OutboundMsg>) => {
-        onmsg?.(e)
-        if (e.data.type === 'built') resolve()
-      }
+      builtResolve = resolve
       worker!.onerror = (err) => reject(err)
       setTimeout(resolve, 5000)
     })

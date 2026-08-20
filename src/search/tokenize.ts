@@ -10,7 +10,7 @@ export function segmentZh(text: string): string[] {
 }
 
 export function hasCJK(text: string): boolean {
-  return /[^\x00-\x7f]/.test(text)
+  return /[^\u0020-\u007e]/.test(text)
 }
 
 export function isLatinWord(text: string): boolean {
