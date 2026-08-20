@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import Layout from './app/Layout'
 import { useAppInit } from './app/hooks'
 import Landing from './features/landing/Landing.tsx'
+import Browse from './features/browse/Browse.tsx'
 
 const Placeholder = ({ name }: { name: string }) => (
   <div className="p-8">
@@ -16,7 +17,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Landing />} />
-        <Route path="/browse" element={<Placeholder name="总目录" />} />
+        <Route path="/browse" element={<Browse />} />
         <Route path="/timeline" element={<Placeholder name="时代长卷" />} />
         <Route path="/entry/:id" element={<Placeholder name="卷宗" />} />
         <Route path="/search" element={<Placeholder name="检索" />} />
