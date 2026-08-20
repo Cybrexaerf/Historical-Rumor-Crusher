@@ -60,6 +60,16 @@ function stripTags(html: string): string {
     .trim()
 }
 
+/** 正文引用了 [^id] 但未给定义时，自动用 front-matter 参考文献 补齐脚注定义 */
+function appendAutoFootnotes(body: string, meta: EntryMeta): string {
+  const defined = new Set([...body.matchAll(/\[\^([\w-]+)\]:/g)].map((m) => m[1]))
+  const extras = meta.references
+    .filter((r) => !defined.has(r.id))
+    .map((r) => `[^${r.id}]: ${r.text}`)
+  if (extras.length === 0) return body
+  return `${body}\n\n${extras.join('\n\n')}\n`
+}
+
 function checkSections(body: string, warnings: string[]): void {
   const h2s = [...body.matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim())
   const found = new Set(h2s.filter((t) => SECTION_TITLES[t]).map((t) => SECTION_TITLES[t]))
@@ -101,7 +111,9 @@ export function parseEntry(raw: string, filename = '(未命名)', inject?: Sanit
     return { ok: false, errors: [...errors, ...warnings.filter((w) => w.startsWith('缺少必含区块'))] }
   }
 
-  const rawHtml = md.render(fm.body)
+  const body = appendAutoFootnotes(fm.body, meta)
+
+  const rawHtml = md.render(body)
   const sanitize = inject ?? defaultSanitizer()
   if (!sanitize) {
     return { ok: false, errors: [`${filename}: 当前环境无 window，须注入 sanitize`] }

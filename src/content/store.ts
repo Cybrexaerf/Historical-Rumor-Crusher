@@ -16,9 +16,12 @@ interface ArchiveState {
   merged: MergedIndex
   imports: ImportRecord[]
   user: UserData
+  /** 正文缓存（懒加载后填充） */
+  bodies: Record<string, string>
 
   init: () => Promise<void>
   loadEntry: (id: string) => Promise<EntryFile | null>
+  setBody: (id: string, html: string) => void
   importRawMd: (id: string, meta: EntryMeta, bodyHtml: string, rawMd: string) => Promise<ImportOutcome>
   removeImport: (id: string) => Promise<void>
   toggleBookmark: (id: string) => void
@@ -42,6 +45,7 @@ export const useArchive = create<ArchiveState>((set, get) => ({
   merged: EMPTY_INDEX,
   imports: [],
   user: { bookmarks: [], read: [], recent: [], fontSize: 'normal' },
+  bodies: {},
 
   async init() {
     const imports = await getAllImports()
@@ -57,6 +61,10 @@ export const useArchive = create<ArchiveState>((set, get) => ({
       if (rec) return { meta: rec.meta, bodyHtml: rec.bodyHtml }
     }
     return loadBuiltEntry(id)
+  },
+
+  setBody(id, html) {
+    set({ bodies: { ...get().bodies, [id]: html } })
   },
 
   async importRawMd(id, meta, bodyHtml, rawMd) {

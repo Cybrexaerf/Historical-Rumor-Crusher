@@ -18,3 +18,47 @@
     background: rgba(168, 53, 44, 0.2);
   }
 }
+
+@layer components {
+  .entry-prose p {
+    margin: 0.8em 0;
+    text-align: justify;
+  }
+  .entry-prose h3 {
+    font-weight: 700;
+    margin: 1.3em 0 0.5em;
+    letter-spacing: 0.08em;
+  }
+  .entry-prose blockquote {
+    border-left: 3px solid var(--c-gold);
+    padding: 0.2em 0 0.2em 1em;
+    margin: 0.8em 0;
+    color: var(--c-ink-soft);
+    font-family: 'LXGW WenKai', KaiTi, serif;
+  }
+  .entry-prose sup.footnote-ref a,
+  .entry-prose a.footnote-backref {
+    color: var(--c-seal);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 0 2px;
+  }
+  .entry-prose strong {
+    font-weight: 700;
+  }
+  .entry-prose em {
+    font-style: italic;
+  }
+  .entry-prose ol,
+  .entry-prose ul {
+    padding-left: 1.6em;
+    margin: 0.6em 0;
+    list-style: decimal;
+  }
+  .entry-prose section.footnotes {
+    display: none;
+  }
+  .entry-prose hr.footnotes-sep {
+    display: none;
+  }
+}

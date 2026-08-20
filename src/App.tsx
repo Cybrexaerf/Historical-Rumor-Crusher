@@ -5,6 +5,7 @@ import Landing from './features/landing/Landing.tsx'
 import Browse from './features/browse/Browse.tsx'
 import Timeline from './features/timeline/Timeline.tsx'
 import SearchPage from './features/search/SearchPage.tsx'
+import EntryPage from './features/entry/EntryPage.tsx'
 
 const Placeholder = ({ name }: { name: string }) => (
   <div className="p-8">
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/browse" element={<Browse />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/entry/:id" element={<EntryPage />} />
         <Route path="/imports" element={<Placeholder name="导入管理" />} />
         <Route path="/bookmarks" element={<Placeholder name="我的书架" />} />
       </Route>
