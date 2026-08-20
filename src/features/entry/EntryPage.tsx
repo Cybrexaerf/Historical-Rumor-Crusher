@@ -8,6 +8,7 @@ import SectionRenderer from './SectionRenderer.tsx'
 import ReferencesList from './ReferencesList.tsx'
 import DossierSidebar from './DossierSidebar.tsx'
 import ReadingProgress from './ReadingProgress.tsx'
+import CorrectionButton from './CorrectionButton.tsx'
 
 export default function EntryPage() {
   const { id = '' } = useParams()
@@ -119,9 +120,12 @@ export default function EntryPage() {
             )}
           </nav>
 
-          <p className="mt-6 text-center text-xs text-inksoft tracking-[0.25em]">
-            本卷为馆藏第 {volumeNo} 卷 · 共 {merged.entries.length} 卷 · 档号 {m.id}
-          </p>
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <p className="text-center text-xs text-inksoft tracking-[0.25em]">
+              本卷为馆藏第 {volumeNo} 卷 · 共 {merged.entries.length} 卷 · 档号 {m.id}
+            </p>
+            <CorrectionButton entry={entry} />
+          </div>
         </div>
       </div>
     </div>

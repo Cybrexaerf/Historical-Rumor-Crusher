@@ -4,6 +4,7 @@ import { useArchive } from '../../content/store.ts'
 import { parseMdForImport, recordToMarkdown, downloadText } from '../../content/md-runtime.ts'
 import DropZone from './DropZone.tsx'
 import ConflictDialog from './ConflictDialog.tsx'
+import CorrectionInbox from './CorrectionInbox.tsx'
 
 interface Report {
   file: string
@@ -161,6 +162,8 @@ export default function ImportsPage() {
           </ul>
         )}
       </section>
+
+      <CorrectionInbox />
 
       {conflict && (
         <ConflictDialog
