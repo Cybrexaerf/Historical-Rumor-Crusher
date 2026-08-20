@@ -1,0 +1,20 @@
+@import './design/tokens.css';
+@import './design/animations.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: var(--c-paper-deep);
+  }
+  body {
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+    color: var(--c-ink);
+    font-size: calc(var(--fs-body) * var(--font-scale));
+    line-height: calc(var(--lh-body) * var(--lh-scale));
+  }
+  ::selection {
+    background: rgba(168, 53, 44, 0.2);
+  }
+}

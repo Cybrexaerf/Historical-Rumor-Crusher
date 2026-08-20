@@ -1,0 +1,37 @@
+:root {
+  --c-paper: #f4edda;
+  --c-paper-deep: #e9dfc4;
+  --c-ink: #2b2620;
+  --c-ink-soft: #5a5142;
+  --c-gold: #8a6d2f;
+  --c-seal: #a8352c;
+  --c-verdict-green: #3e5e46;
+  --c-verdict-partial: #b07a2a;
+  --c-verdict-disputed: #5a6b7a;
+  --c-verdict-open: #8a8578;
+
+  --fs-body: 17px;
+  --lh-body: 1.9;
+  --max-line: 38em;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  --font-scale: 1;
+  --lh-scale: 1;
+}
+
+[data-fontsize='large'] {
+  --font-scale: 1.15;
+  --lh-scale: 1.05;
+}
+[data-fontsize='small'] {
+  --font-scale: 0.9;
+  --lh-scale: 0.95;
+}
